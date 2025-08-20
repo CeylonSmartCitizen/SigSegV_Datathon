@@ -1,0 +1,20 @@
+task_id,task_name,section_id,section_name
+TASK-001,Birth Certificate Application,SEC-001,Civil Registration Services
+TASK-002,Marriage Certificate Issue,SEC-001,Civil Registration Services
+TASK-003,Business License Application,SEC-002,Business & Trade Services
+TASK-004,Tax Registration Processing,SEC-002,Business & Trade Services
+TASK-005,VAT Certificate Issue,SEC-002,Business & Trade Services
+TASK-006,Import/Export Permit,SEC-002,Business & Trade Services
+TASK-007,Property Title Registration,SEC-003,Land & Property Services
+TASK-008,Survey Document Processing,SEC-003,Land & Property Services
+TASK-009,Deed Transfer Service,SEC-003,Land & Property Services
+TASK-010,Driving License Issue,SEC-004,Transport Services
+TASK-011,Vehicle Registration,SEC-004,Transport Services
+TASK-012,Road Tax Payment,SEC-004,Transport Services
+TASK-013,Pension Application,SEC-005,Social Services
+TASK-014,Disability Certificate Issue,SEC-005,Social Services
+TASK-015,Senior Citizen ID Processing,SEC-005,Social Services
+TASK-016,Court Document Filing,SEC-006,Legal & Judicial Services
+TASK-017,Police Report Processing,SEC-006,Legal & Judicial Services
+TASK-018,Legal Certification,SEC-006,Legal & Judicial Services
+TASK-019,Notary Public Services,SEC-006,Legal & Judicial Services
