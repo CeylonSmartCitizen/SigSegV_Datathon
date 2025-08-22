@@ -56,20 +56,30 @@ def preprocess_data(df):
     
     # For Task 1: Convert basic test format to training format
     if 'task_id' in processed_df.columns:
-        # Parse time components
-        processed_df['appointment_time'] = processed_df['time']
+        # Parse time components and create time-based features
+        time_dt = pd.to_datetime(processed_df['time'], format='%H:%M')
+        processed_df['hour'] = time_dt.dt.hour
         
-        # Add missing columns with default values (you may need to adjust these)
+        # Create date-based features
+        date_dt = pd.to_datetime(processed_df['date'])
+        processed_df['dayofweek'] = date_dt.dt.dayofweek
+        processed_df['is_weekend'] = (date_dt.dt.dayofweek >= 5).astype(int)
+        
+        # Create peak hours feature (assume 9-11 AM and 2-4 PM are peak)
+        processed_df['is_peak'] = ((processed_df['hour'].between(9, 11)) | 
+                                 (processed_df['hour'].between(14, 16))).astype(int)
+        
+        # Add required columns with appropriate default values
         processed_df['num_documents'] = 1  # Default value
         processed_df['queue_number'] = 1   # Default value
+        processed_df['queue_density'] = 5.0  # Default queue density
+        processed_df['wait_time'] = 10.0     # Default wait time in minutes
         
         # Remove columns that aren't needed for prediction
-        if 'row_id' in processed_df.columns:
-            processed_df = processed_df.drop('row_id', axis=1)
-        if 'date' in processed_df.columns:
-            processed_df = processed_df.drop('date', axis=1)
-        if 'time' in processed_df.columns:
-            processed_df = processed_df.drop('time', axis=1)
+        columns_to_remove = ['row_id', 'date', 'time']
+        for col in columns_to_remove:
+            if col in processed_df.columns:
+                processed_df = processed_df.drop(col, axis=1)
     
     # For Task 2: Keep date column for date feature engineering
     elif 'section_id' in processed_df.columns:
@@ -87,24 +97,40 @@ def feature_engineer(df):
     
     processed_df = df.copy()
     
-    # For Task 1: Create task indicator columns (one-hot encoding)
+    # For Task 1: Create features in the exact order expected by the model
     if 'task_id' in processed_df.columns:
-        # Get unique task IDs and create dummy variables
+        # One-hot encode task_id first
         task_dummies = pd.get_dummies(processed_df['task_id'], prefix='task')
-        processed_df = pd.concat([processed_df, task_dummies], axis=1)
-        processed_df = processed_df.drop('task_id', axis=1)
         
-        # Process appointment_time if it exists
-        if 'appointment_time' in processed_df.columns:
-            # Convert time to numerical format (minutes since midnight)
-            try:
-                time_parts = processed_df['appointment_time'].str.split(':')
-                hours = time_parts.str[0].astype(int)
-                minutes = time_parts.str[1].astype(int)
-                processed_df['appointment_time'] = hours * 60 + minutes
-            except:
-                # If conversion fails, use a default value
-                processed_df['appointment_time'] = 540  # 9:00 AM in minutes
+        # Create features dictionary in the exact order expected by the model
+        features_dict = {}
+        features_dict['hour'] = processed_df['hour']
+        features_dict['dayofweek'] = processed_df['dayofweek']
+        features_dict['is_weekend'] = processed_df['is_weekend']
+        features_dict['is_peak'] = processed_df['is_peak']
+        features_dict['num_documents'] = processed_df['num_documents']
+        features_dict['queue_number'] = processed_df['queue_number']
+        features_dict['queue_density'] = processed_df['queue_density']
+        features_dict['wait_time'] = processed_df['wait_time']
+        
+        # Add task dummy variables in order
+        task_feature_order = [
+            'task_TASK-001', 'task_TASK-002', 'task_TASK-003', 'task_TASK-004', 'task_TASK-005',
+            'task_TASK-006', 'task_TASK-007', 'task_TASK-008', 'task_TASK-009', 'task_TASK-010',
+            'task_TASK-011', 'task_TASK-012', 'task_TASK-013', 'task_TASK-014', 'task_TASK-015',
+            'task_TASK-016', 'task_TASK-017', 'task_TASK-018', 'task_TASK-019'
+        ]
+        
+        for task_col in task_feature_order:
+            if task_col in task_dummies.columns:
+                features_dict[task_col] = task_dummies[task_col]
+            else:
+                features_dict[task_col] = 0  # Default to 0 if task not present
+        
+        # Create new dataframe with features in the correct order
+        full_feature_order = ['hour', 'dayofweek', 'is_weekend', 'is_peak', 'num_documents', 
+                             'queue_number', 'queue_density', 'wait_time'] + task_feature_order
+        processed_df = pd.DataFrame(features_dict)[full_feature_order]
     
     # For Task 2: Create date-based features that the model expects
     elif 'section_id' in processed_df.columns:
