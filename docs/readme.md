@@ -3,7 +3,7 @@
 
 ## Project Overview
 
-This project was developed for the Rootcode Datathon 2025 under the theme "Ceylon Smart Citizen." Our solution leverages AI and data-driven decision-making to optimize government services in Sri Lanka by predicting service completion times and staffing requirements to improve efficiency and citizen satisfaction.
+This project was developed for the Rootcode Traithlon's Datathon 2025 under the theme "Ceylon Smart Citizen." Our solution leverages AI and data-driven decision-making to optimize government services in Sri Lanka by predicting service completion times and staffing requirements to improve efficiency and citizen satisfaction.
 
 ## Directory Structure
 
@@ -57,11 +57,15 @@ Install dependencies with:
 ```bash
 pip install -r requirements.txt
 ```
-*(Create a `requirements.txt` if not present.)*
 
 ## Team Members
 
-- [Add your team members here]
+- Shalon Fernando
+- Gaindu Nuhansith  
+- Lehan Nawaratne
+- K.B.Pavith Kavisika 
+- Arani Inothma
+- Yohan Helitha
 
 ## Documentation
 
